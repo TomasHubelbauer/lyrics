@@ -91,6 +91,10 @@ dragged without stealing the pointer outside of the lyric line's hitzone.
 - Electron doesn't ship with `fetch` despite shipping with Node
   - Current Electron ships with new enough Node it should have built-in `fetch`
   - See https://github.com/electron/electron/issues/37493
+- The text shadow remains visible even after changing the text
+  - I am not sure if this is a problem with Electron or the macOS compositor
+  - Clearing the text before updating it did not help
+  - Hiding and showing the window between lyric updates did not help
 
 ## Logs
 
