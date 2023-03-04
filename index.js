@@ -33,8 +33,13 @@ void async function () {
   let position = 0;
   let duration = 0;
 
-  /** @type {{ artist: string; song: string; error: boolean; message?: string; syncType: 'LINE_SYNCED' | 'UNSYNCED'; lines: { timeTag: string; words: string; }[]; } | undefined} */
+  /** @typedef {{ timeTag: string; words: string; }} Line */
+
+  /** @type {{ artist: string; song: string; error: boolean; message?: string; syncType: 'LINE_SYNCED' | 'UNSYNCED'; lines: Line[]; } | undefined} */
   let lyrics;
+
+  /** @type {Line | undefined} */
+  let line;
 
   // Render current lyrics line on a fast interval for smooth updates
   setInterval(
@@ -52,9 +57,14 @@ void async function () {
         case 'UNSYNCED': {
           const ratio = position / duration;
           const index = ~~(lyrics.lines.length * ratio);
-          const line = lyrics.lines[index];
-          const text = line?.words?.replace(/'/g, '\\\'') ?? '';
-          await window.webContents.executeJavaScript(`'~ ${text}';`);
+          const _line = lyrics.lines[index];
+          if (_line !== line) {
+            line = _line;
+            const text = line?.words?.replace(/'/g, '\\\'') ?? '';
+            console.log(`Updated the unsynchronized lyric to: ${text}`);
+            await window.webContents.executeJavaScript(`document.body.textContent = '~ ${text}';`);
+          }
+
           position += .1;
           break;
         }
@@ -62,9 +72,14 @@ void async function () {
           {
             const stamp = `${(~~(position / 60)).toString().padStart('00'.length, '0')}:${(position % 60).toFixed(2).toString().padStart('00.00'.length, '0')}`;
             const index = lyrics.lines.findIndex(line => line.timeTag >= stamp);
-            const line = lyrics.lines[index - 1];
-            const text = line?.words?.replace(/'/g, '\\\'') ?? '';
-            await window.webContents.executeJavaScript(`document.body.textContent = '${text}';`);
+            const _line = lyrics.lines[index - 1];
+            if (_line !== line) {
+              line = _line;
+              const text = line?.words?.replace(/'/g, '\\\'') ?? '';
+              console.log(`Updated the synchronized lyric to: ${text}`);
+              await window.webContents.executeJavaScript(`document.body.textContent = '${text}';`);
+            }
+
             position += .1;
             break;
           }
