@@ -195,7 +195,7 @@ void async function () {
         throw new Error(durationStderr);
       }
 
-      duration = Number(durationStdout);
+      duration = Number(durationStdout) / 1000;
     }
     catch (error) {
       console.log('Failed to get Spotify duration');
