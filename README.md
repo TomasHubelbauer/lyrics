@@ -61,7 +61,7 @@ dragged without stealing the pointer outside of the lyric line's hitzone.
 
 I think this might be a problem with my logic.
 
-### Report the lingerish shadow issue with a minimal example
+### Report the lingering shadow issue with a minimal example
 
 Build a repo which just shows the current time or a random number or something.
 
