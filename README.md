@@ -53,6 +53,13 @@ This will require not making the window click-through, just transparent and cut
 to the exact size of the lyrics line so it fits snugly around it and can be
 dragged without stealing the pointer outside of the lyric line's hitzone.
 
+### Allow scrolling up or down while over the lyrics to adjust unsynchronized
+
+The pace of the synchronized lyrics is linear now.
+With the ability to hold up or rush the pace, it will be possible to correc the
+timing issues with linear unsynchronized lyrics.
+Also consider saving the changes to manually synchronized lyrics for reuse.
+
 ### Fix the second synchronized lyric update always being an empty line
 
 I think this might be a problem with my logic.
