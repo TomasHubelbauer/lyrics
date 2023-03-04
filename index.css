@@ -1,0 +1,8 @@
+body {
+  color: whitesmoke;
+  font: normal 27pt sans-serif;
+  margin: 5em;
+  opacity: .5;
+  text-align: center;
+  text-shadow: 0 0 2px black, 0 0 1ex white;
+}
