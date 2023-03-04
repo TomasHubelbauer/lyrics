@@ -71,6 +71,10 @@ This will require not making the window click-through, just transparent and cut
 to the exact size of the lyrics line so it fits snugly around it and can be
 dragged without stealing the pointer outside of the lyric line's hitzone.
 
+### Fix the second synchronized lyric update always being an empty line
+
+I think this might be a problem with my logic.
+
 ## Notes
 
 - Electron doesn't support ESM
