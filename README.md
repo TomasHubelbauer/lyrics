@@ -47,10 +47,6 @@ Let's revisit this later and see if there is a nicer way to do it.
 Right now `text-stroke` doesn't work in Electron and I do not want to add hacks
 for this.
 
-### Try to CJS entry-point hack for ESM support in the main process code
-
-https://github.com/electron/electron/issues/21457#issuecomment-612441169
-
 ### Allow dragging the lyrics away or dismissing them for a song
 
 This will require not making the window click-through, just transparent and cut
@@ -74,6 +70,8 @@ Build a repo which just shows the current time or a random number or something.
     TLA
   - Using dynamic `import` requires `type` be unset in `package.json` BTW
   - See https://github.com/electron/electron/issues/21457
+  - I found a hack with an ESM Node package but decided against adding a dep
+    https://github.com/electron/electron/issues/21457#issuecomment-612441169
 - Electron doesn't support TLA
   - I am using an IIFE with dynamic `import` to simulate something at least
     resembling ESM because TLA is not supported (to drop the need for the IIFE)
