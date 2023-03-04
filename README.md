@@ -98,7 +98,10 @@ I think this might be a problem with my logic.
 - The text shadow remains visible even after changing the text
   - I am not sure if this is a problem with Electron or the macOS compositor
   - Clearing the text before updating it did not help
+    I tried both in a single `executeJavaScript` call and two different ones
   - Hiding and showing the window between lyric updates did not help
+  - Resizing the window to zero and back did not help
+  - Reloading the window before each lyric update lessens the problem a lot!
 
 ## Logs
 

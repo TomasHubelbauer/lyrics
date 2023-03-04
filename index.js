@@ -62,6 +62,7 @@ void async function () {
             line = _line;
             const text = line?.words?.replace(/'/g, '\\\'') ?? '';
             console.log(`Updated the unsynchronized lyric to: ${text}`);
+            window.reload();
             await window.webContents.executeJavaScript(`document.body.textContent = '~ ${text}';`);
           }
 
@@ -77,6 +78,7 @@ void async function () {
               line = _line;
               const text = line?.words?.replace(/'/g, '\\\'') ?? '';
               console.log(`Updated the synchronized lyric to: ${text}`);
+              window.reload();
               await window.webContents.executeJavaScript(`document.body.textContent = '${text}';`);
             }
 
