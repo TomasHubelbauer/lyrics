@@ -35,20 +35,6 @@ https://github.com/akashrchandran/spotify-lyrics-api/blob/main/src/Spotify.php
 The logic seems quite simple so I could be able to hit Spotify directly and not
 have to risk the service going down.
 
-### Fix macOS compositing issue where the window lingers imprinted into another
-
-When a lyric is displayed and I switch windows, the old window has the lyrics
-imprinted to it and the new window will have another lyrics imprinted to it once
-I switch windows again.
-
-This seems to be an issue with macOS compositing and I think the best way to fix
-it will be to briefly hide and show the window each time the line changes.
-
-Another option will be to measure the text and dynamically change the window
-dimensions to make sure it forces the compositor to recompose.
-
-I think the root cause here is definitely the transparent background.
-
 ### Give the text vertical gradient from white to whitesmoke once supported
 
 Currently text with gradient is too hacky and would dirty up the code:
@@ -75,6 +61,10 @@ dragged without stealing the pointer outside of the lyric line's hitzone.
 
 I think this might be a problem with my logic.
 
+### Report the lingerish shadow issue with a minimal example
+
+Build a repo which just shows the current time or a random number or something.
+
 ## Notes
 
 - Electron doesn't support ESM
@@ -96,12 +86,13 @@ I think this might be a problem with my logic.
   - Current Electron ships with new enough Node it should have built-in `fetch`
   - See https://github.com/electron/electron/issues/37493
 - The text shadow remains visible even after changing the text
-  - I am not sure if this is a problem with Electron or the macOS compositor
+  - This is some sort of an issue with Electron because it is for the most part
+    fixable by reloading the page (vast majority of reloads clear the shadow)
   - Clearing the text before updating it did not help
-    I tried both in a single `executeJavaScript` call and two different ones
-  - Hiding and showing the window between lyric updates did not help
+    I tried both in a single `executeJavaScript` call and split clear and update
+  - Hiding and showing the window did not help
   - Resizing the window to zero and back did not help
-  - Reloading the window before each lyric update lessens the problem a lot!
+  - Reloading the window helps for the most part so I stuck with it
 
 ## Logs
 
@@ -118,3 +109,5 @@ I think this might be a problem with my logic.
 - Implemented logic for scraping Spotify ID for artist and title from Google
 - Implemented logic for pulling lyrics using the Spotify Lyrics API on GitHub
   (https://github.com/akashrchandran/spotify-lyrics-api)
+- Fixed most of the lingering shadow issue by reloading before every line change
+- Made the lyrics fade into view instead of flashing in aggressively

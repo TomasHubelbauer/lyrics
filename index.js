@@ -60,8 +60,11 @@ void async function () {
           const _line = lyrics.lines[index];
           if (_line !== line) {
             line = _line;
+
             const text = line?.words?.replace(/'/g, '\\\'') ?? '';
             console.log(`Updated the unsynchronized lyric to: ${text}`);
+
+            // Get rid of the lingering shadow issue (for the most part)
             window.reload();
             await window.webContents.executeJavaScript(`document.body.textContent = '~ ${text}';`);
           }
@@ -76,8 +79,11 @@ void async function () {
             const _line = lyrics.lines[index - 1];
             if (_line !== line) {
               line = _line;
+
               const text = line?.words?.replace(/'/g, '\\\'') ?? '';
               console.log(`Updated the synchronized lyric to: ${text}`);
+
+              // Get rid of the lingering shadow issue (for the most part)
               window.reload();
               await window.webContents.executeJavaScript(`document.body.textContent = '${text}';`);
             }
