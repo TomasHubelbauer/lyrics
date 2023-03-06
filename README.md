@@ -8,6 +8,10 @@ kid and which I loved.
 I don't remember its name anymore thought and was unable to find it using web
 search.
 
+![](lyrics.mp4)
+
+./lyrics.mp4
+
 ## Credits
 
 Thanks to [akashrchandran](https://github.com/akashrchandran) for running the
