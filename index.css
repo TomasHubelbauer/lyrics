@@ -1,11 +1,14 @@
 body {
   animation: reveal .5s forwards;
-  color: whitesmoke;
-  font: normal 27pt sans-serif;
-  margin: 5em;
+  font: bold 27pt sans-serif;
+  margin: 0;
   opacity: 0;
-  text-align: center;
-  text-shadow: 0 0 2px black, 0 0 1ex white;
+  overflow: hidden;
+}
+
+svg {
+  height: 100vh;
+  width: 100vw;
 }
 
 @keyframes reveal {

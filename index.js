@@ -47,13 +47,13 @@ void async function () {
   setInterval(
     async () => {
       if (lyrics?.error || state !== 'playing') {
-        window.webContents.executeJavaScript(`document.body.textContent = '';`);
+        window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '';`);
         return;
       }
 
       switch (lyrics?.syncType) {
         case undefined: {
-          window.webContents.executeJavaScript(`document.body.textContent = '…';`);
+          window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '…';`);
           break;
         }
         case 'UNSYNCED': {
@@ -66,9 +66,9 @@ void async function () {
             const text = line?.words?.replace(/'/g, '\\\'') ?? '';
             console.log(`Updated the unsynchronized lyric to: ${text}`);
 
-            // Get rid of the lingering shadow issue (for the most part)
+            // Get rid of the lingering shadows/opacity (for the most part)
             window.reload();
-            await window.webContents.executeJavaScript(`document.body.textContent = '~ ${text}';`);
+            await window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '~ ${text}';`);
           }
 
           position += .1;
@@ -85,9 +85,9 @@ void async function () {
               const text = line?.words?.replace(/'/g, '\\\'') ?? '';
               console.log(`Updated the synchronized lyric to: ${text}`);
 
-              // Get rid of the lingering shadow issue (for the most part)
+              // Get rid of the lingering shadows/opacity (for the most part)
               window.reload();
-              await window.webContents.executeJavaScript(`document.body.textContent = '${text}';`);
+              await window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '${text}';`);
             }
 
             position += .1;
@@ -95,7 +95,7 @@ void async function () {
           }
         }
         default: {
-          window.webContents.executeJavaScript(`document.body.textContent = 'Unknown sync type "${lyrics.syncType}"!';`);
+          window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = 'Unknown sync type "${lyrics.syncType}"!';`);
         }
       }
     },
@@ -198,7 +198,7 @@ void async function () {
 
       if (state !== _state) {
         if (!state) {
-          console.log(`Player state is '${_state}'${state !== 'playing' ? ' - waiting for playback' : ''}`);
+          console.log(`Player state is '${_state}'${_state !== 'playing' ? ' - waiting for playback' : ''}`);
         }
         else {
           console.log(`Changed player state from '${state}' to '${_state}'`);

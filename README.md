@@ -35,18 +35,6 @@ https://github.com/akashrchandran/spotify-lyrics-api/blob/main/src/Spotify.php
 The logic seems quite simple so I could be able to hit Spotify directly and not
 have to risk the service going down.
 
-### Give the text vertical gradient from white to whitesmoke once supported
-
-Currently text with gradient is too hacky and would dirty up the code:
-https://css-tricks.com/snippets/css/gradient-text/
-
-Let's revisit this later and see if there is a nicer way to do it.
-
-### Add a stroke to the text once there is nice and standard CSS for it
-
-Right now `text-stroke` doesn't work in Electron and I do not want to add hacks
-for this.
-
 ### Allow dragging the lyrics away or dismissing them for a song
 
 This will require not making the window click-through, just transparent and cut
@@ -90,7 +78,7 @@ Build a repo which just shows the current time or a random number or something.
 - Electron doesn't ship with `fetch` despite shipping with Node
   - Current Electron ships with new enough Node it should have built-in `fetch`
   - See https://github.com/electron/electron/issues/37493
-- The text shadow remains visible even after changing the text
+- The text shadow/opacity ghost remains visible even after changing the text
   - This is some sort of an issue with Electron because it is for the most part
     fixable by reloading the page (vast majority of reloads clear the shadow)
   - Clearing the text before updating it did not help
@@ -98,6 +86,9 @@ Build a repo which just shows the current time or a random number or something.
   - Hiding and showing the window did not help
   - Resizing the window to zero and back did not help
   - Reloading the window helps for the most part so I stuck with it
+  - This is an issue for both HTML and SVG based text rendering!
+  - This might seem as the OS compositor because sometimes it lingers even after
+    the Electron process is killed but so far it has always be a stray process
 
 ## Logs
 
@@ -116,3 +107,7 @@ Build a repo which just shows the current time or a random number or something.
   (https://github.com/akashrchandran/spotify-lyrics-api)
 - Fixed most of the lingering shadow issue by reloading before every line change
 - Made the lyrics fade into view instead of flashing in aggressively
+- Swithced to SVG based rendering
+  - Allows for the text fade without ugly unsupported CSS
+  - Allows for an easy way to do a text outline
+  - Still suffers from the shadow/opacity ghosting HTML based rendering did
