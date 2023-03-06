@@ -190,15 +190,22 @@ void async function () {
         throw new Error(stateStderr);
       }
 
-      if (stateStdout !== 'playing\n' && stateStdout !== 'paused\n') {
-        throw new Error(`Unexpected player state '${stateStdout}'!`);
+      const _state = stateStdout.trimEnd();
+
+      if (_state !== 'playing' && _state !== 'paused') {
+        throw new Error(`Unexpected player state '${_state}'!`);
       }
 
-      if (state !== stateStdout.trimEnd()) {
-        console.log(`Changed player state from '${state}' to '${stateStdout.trimEnd()}'`);
+      if (state !== _state) {
+        if (!state) {
+          console.log(`Player state is '${_state}'${state !== 'playing' ? ' - waiting for playback' : ''}`);
+        }
+        else {
+          console.log(`Changed player state from '${state}' to '${_state}'`);
+        }
       }
 
-      state = stateStdout.trimEnd();
+      state = _state;
     }
     catch (error) {
       console.log('Failed to get Spotify state: ' + error);
