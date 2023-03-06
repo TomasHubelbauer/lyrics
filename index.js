@@ -30,6 +30,8 @@ void async function () {
   // Make the window click-through
   window.setIgnoreMouseEvents(true);
 
+  /** @type {'playing' | 'paused'} */
+  let state;
   let position = 0;
   let duration = 0;
 
@@ -44,7 +46,7 @@ void async function () {
   // Render current lyrics line on a fast interval for smooth updates
   setInterval(
     async () => {
-      if (lyrics?.error) {
+      if (lyrics?.error || state !== 'playing') {
         window.webContents.executeJavaScript(`document.body.textContent = '';`);
         return;
       }
@@ -118,7 +120,7 @@ void async function () {
       artist = artistStdout.trimEnd();
     }
     catch (error) {
-      console.log('Failed to get Spotify artist');
+      console.log('Failed to get Spotify artist: ' + error);
       continue;
     }
 
@@ -133,7 +135,7 @@ void async function () {
       song = songStdout.trimEnd();
     }
     catch (error) {
-      console.log('Failed to get Spotify song');
+      console.log('Failed to get Spotify song: ' + error);
       continue;
     }
 
@@ -183,6 +185,27 @@ void async function () {
     }
 
     try {
+      const { stdout: stateStdout, stderr: stateStderr } = await exec(`osascript -e 'tell application "Spotify" to player state'`);
+      if (stateStderr) {
+        throw new Error(stateStderr);
+      }
+
+      if (stateStdout !== 'playing\n' && stateStdout !== 'paused\n') {
+        throw new Error(`Unexpected player state '${stateStdout}'!`);
+      }
+
+      if (state !== stateStdout.trimEnd()) {
+        console.log(`Changed player state from '${state}' to '${stateStdout.trimEnd()}'`);
+      }
+
+      state = stateStdout.trimEnd();
+    }
+    catch (error) {
+      console.log('Failed to get Spotify state: ' + error);
+      continue;
+    }
+
+    try {
       const { stdout: positionStdout, stderr: positionStderr } = await exec(`osascript -e 'tell application "Spotify" to player position'`);
       if (positionStderr) {
         throw new Error(positionStderr);
@@ -191,7 +214,7 @@ void async function () {
       position = Number(positionStdout);
     }
     catch (error) {
-      console.log('Failed to get Spotify position');
+      console.log('Failed to get Spotify position: ' + error);
       continue;
     }
 
@@ -204,7 +227,7 @@ void async function () {
       duration = Number(durationStdout) / 1000;
     }
     catch (error) {
-      console.log('Failed to get Spotify duration');
+      console.log('Failed to get Spotify duration: ' + error);
       continue;
     }
   }
