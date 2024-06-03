@@ -11,9 +11,6 @@ electron.app.on('ready', async () => {
 
   let authorization = await promptAuthorization();
 
-  // Hide the Dock icon for the application
-  electron.app.dock.hide();
-
   const display = electron.screen.getPrimaryDisplay();
   const { width, height } = display.workAreaSize;
 
