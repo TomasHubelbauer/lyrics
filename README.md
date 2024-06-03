@@ -14,6 +14,10 @@ having and may have just configured for myself.
 
 ## Tasks
 
+### Prevent the app from re-opening Spotify if not open or closed while it runs
+
+It seems to be reviving it.
+
 ### Figure out automated publishing to GitHub Actions
 
 Build for both Windows and macOS:
