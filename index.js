@@ -44,32 +44,24 @@ electron.app.on('ready', async () => {
   // Render current lyrics line on a fast interval for smooth updates
   setInterval(
     async () => {
-      if (lyrics?.error || state !== 'playing') {
-        window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '';`);
+      if (!lyrics || ('error' in lyrics) || state !== 'playing') {
+        // Get rid of the lingering shadows/opacity (for the most part) - see the readme
+        window.reload();
         return;
       }
 
-      switch (lyrics?.syncType) {
-        case undefined: {
-          window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '…';`);
-          break;
-        }
+      /** @type {string | null | undefined} */
+      let lyric;
+      switch (lyrics.syncType) {
         case 'UNSYNCED': {
           const ratio = position / duration;
           const index = ~~(lyrics.lines.length * ratio);
           const _line = lyrics.lines[index];
           if (_line !== line) {
             line = _line;
-
-            const text = line?.words?.replace(/'/g, '\\\'') ?? '';
-
-            // Get rid of the lingering shadows/opacity (for the most part) - see the readme
-            window.reload();
-            await window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '~ ${text}';`);
-            console.log(line?.words ? `Flashed unsynchronized lyric "${line?.words}"` : 'Cleared unsynchronized lyric');
+            lyric = line?.words ?? '';
           }
 
-          position += .1;
           break;
         }
         case 'LINE_SYNCED': {
@@ -78,22 +70,41 @@ electron.app.on('ready', async () => {
             const _line = lyrics.lines[index - 1];
             if (_line !== line) {
               line = _line;
-
-              const text = line?.words?.replace(/'/g, '\\\'') ?? '';
-
-              // Get rid of the lingering shadows/opacity (for the most part) - see the readme
-              window.reload();
-              await window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '${text}';`);
-              console.log(line?.words ? `Flashed synchronized lyric "${line?.words}"` : 'Cleared synchronized lyric');
+              lyric = line?.words ?? '';
             }
 
-            position += .1;
             break;
           }
         }
         default: {
-          window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = 'Unknown sync type "${lyrics.syncType}"!';`);
+          throw new Error(`Unexpected sync type '${lyrics.syncType}'!`);
         }
+      }
+
+      // Advance the position by 100 ms to keep progressing until next 5 s sync
+      position += .1;
+
+      if (lyric === undefined) {
+        // Keep the lyrics display as-is
+        return;
+      }
+
+      // Get rid of the lingering shadows/opacity (for the most part) - see the readme
+      window.reload();
+
+      // Coerce the musical note character to an empty lyric line instead
+      if (lyric === '♪') {
+        lyric = null;
+      }
+
+      if (lyric) {
+        // Escape single quotes and line breaks to make the JavaScript string safe and valid
+        const text = (lyrics.syncType === 'UNSYNCED' ? '~ ' : '') + lyric.replace(/'/g, '\\\'').replace(/(\r|\n)/g, '');
+        await window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '${text}';`);
+        console.log(`Flashed ${lyrics.syncType === 'LINE_SYNCED' ? 'synchronized' : 'unsynchronized'} lyric "${lyric}"`);
+      }
+      else {
+        console.log(`Cleared ${lyrics.syncType === 'LINE_SYNCED' ? 'synchronized' : 'unsynchronized'} lyric`);
       }
     },
     100
