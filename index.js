@@ -207,7 +207,7 @@ electron.app.on('ready', async () => {
       }
 
       if (lyrics.error) {
-        console.log(`Lyrics error for ${artist} - ${song} (${id}): ${lyrics.error}`);
+        console.log(`Lyrics error for ${artist} - ${song}: ${lyrics.error}`);
       }
     }
 
