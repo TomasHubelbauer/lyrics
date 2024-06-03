@@ -1,10 +1,10 @@
-void async function () {
-  const electron = await import('electron');
-  const child_process = await import('child_process');
-  const util = await import('util');
-  const timers = await import('timers/promises');
-  const fs = await import('fs');
+import electron from 'electron';
+import child_process from 'child_process';
+import util from 'util';
+import timers from 'timers/promises';
+import fs from 'fs/promises';
 
+void async function () {
   const { promise: readyPromise, resolve: readyResolve, reject: readyReject } = Promise.withResolvers();
   electron.app.on('ready', readyResolve);
   timers.setTimeout(5000).then(readyReject);
