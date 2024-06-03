@@ -160,7 +160,7 @@ electron.app.on('ready', async () => {
           lyrics = { artist, song, ...data.lyrics };
           await fs.promises.writeFile(path, JSON.stringify(lyrics, null, 2));
 
-          console.log(`Downloaded ${artist} - ${song}`);
+          console.log(`Downloaded ${lyrics.syncType === 'LINE_SYNCED' ? 'synchronized' : 'unsynchronized'} ${artist} - ${song}`);
         }
         else {
           lyrics = { artist, song, error: response.status + ' ' + response.statusText };
