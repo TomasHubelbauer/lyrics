@@ -62,11 +62,11 @@ electron.app.on('ready', async () => {
             line = _line;
 
             const text = line?.words?.replace(/'/g, '\\\'') ?? '';
-            console.log(`Updated the unsynchronized lyric to: ${text}`);
 
             // Get rid of the lingering shadows/opacity (for the most part) - see the readme
             window.reload();
             await window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '~ ${text}';`);
+            console.log(`Flashed unsynchronized lyric "${line?.words}"`);
           }
 
           position += .1;
@@ -80,11 +80,11 @@ electron.app.on('ready', async () => {
               line = _line;
 
               const text = line?.words?.replace(/'/g, '\\\'') ?? '';
-              console.log(`Updated the synchronized lyric to: ${text}`);
 
               // Get rid of the lingering shadows/opacity (for the most part) - see the readme
               window.reload();
               await window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '${text}';`);
+              console.log(`Flashed synchronized lyric "${line?.words}"`);
             }
 
             position += .1;
@@ -193,10 +193,10 @@ electron.app.on('ready', async () => {
 
       if (state !== _state) {
         if (!state) {
-          console.log(`Player is ${_state}`);
+          console.log(`Spotify is ${_state}`);
         }
         else {
-          console.log(`Player went from ${state} to ${_state}`);
+          console.log(`Spotify went from ${state} to ${_state}`);
         }
       }
 
