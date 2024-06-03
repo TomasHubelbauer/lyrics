@@ -151,19 +151,23 @@ electron.app.on('ready', async () => {
           console.log(`Failed to load lyrics for ${artist} - ${song}: ${error}`);
         }
 
-        console.log(`Downloading lyrics for ${artist} - ${song}…`);
+        /** @type {string} */
+        let id;
+        try {
+          const { stdout: idStdout, stderr: idStderr } = await exec(`osascript -e 'tell application "Spotify" to id of the current track'`);
+          if (idStderr) {
+            throw new Error(idStderr);
+          }
 
-        // Download the Google SRP for the artist & song query on `open.spotify.com`
-        const srpUrl = `${'https://'/* Prevent broken syntax highlighting */}www.google.com/search?q=${artist.replace(' ', '+')}}+${song.replace(' ', '+')}+site:open.spotify.com`;
-        const srpHtml = await fetch(srpUrl, { headers: { 'User-Agent': 'Firefox' } }).then(response => response.text());
-
-        // Extract the Spotify track ID from the Google SRP
-        const match = srpHtml.match(/https:\/\/open\.spotify\.com\/track\/(?<id>\w+)/);
-        if (!match) {
+          // E.g.: "ID spotify:track:…"
+          id = idStdout.split(':').at(-1).trimEnd();
+        }
+        catch (error) {
+          console.log('Failed to get Spotify ID: ' + error);
           continue;
         }
 
-        const id = match.groups.id;
+        console.log(`Downloading lyrics for ${artist} - ${song} (${id})…`);
 
         // Download LRC (timestamped) lyrics from the unofficial Spotify Lyrics API
         // See https://github.com/akashrchandran/spotify-lyrics-api
