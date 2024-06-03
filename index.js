@@ -5,6 +5,11 @@ void async function () {
   const timers = await import('timers/promises');
   const fs = await import('fs');
 
+  const { promise: readyPromise, resolve: readyResolve, reject: readyReject } = Promise.withResolvers();
+  electron.app.on('ready', readyResolve);
+  timers.setTimeout(5000).then(readyReject);
+  await readyPromise;
+
   const exec = util.promisify(child_process.exec);
 
   // Hide the Dock icon for the application
