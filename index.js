@@ -219,10 +219,10 @@ electron.app.on('ready', async () => {
 
       if (state !== _state) {
         if (!state) {
-          console.log(`Player state is '${_state}'${_state !== 'playing' ? ' - waiting for playback' : ''}`);
+          console.log(`Player is ${_state}`);
         }
         else {
-          console.log(`Changed player state from '${state}' to '${_state}'`);
+          console.log(`Player went from ${state} to ${_state}`);
         }
       }
 
