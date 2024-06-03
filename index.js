@@ -100,7 +100,7 @@ electron.app.on('ready', async () => {
             const text = line?.words?.replace(/'/g, '\\\'') ?? '';
             console.log(`Updated the unsynchronized lyric to: ${text}`);
 
-            // Get rid of the lingering shadows/opacity (for the most part)
+            // Get rid of the lingering shadows/opacity (for the most part) - see the readme
             window.reload();
             await window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '~ ${text}';`);
           }
@@ -118,7 +118,7 @@ electron.app.on('ready', async () => {
               const text = line?.words?.replace(/'/g, '\\\'') ?? '';
               console.log(`Updated the synchronized lyric to: ${text}`);
 
-              // Get rid of the lingering shadows/opacity (for the most part)
+              // Get rid of the lingering shadows/opacity (for the most part) - see the readme
               window.reload();
               await window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '${text}';`);
             }
