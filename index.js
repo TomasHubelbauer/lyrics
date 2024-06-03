@@ -1,7 +1,4 @@
 void async function () {
-  // Get the "experimental feature" warning about `fetch` out of the way
-  await fetch('https://example.com');
-
   const electron = await import('electron');
   const child_process = await import('child_process');
   const util = await import('util');
