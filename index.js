@@ -1,7 +1,7 @@
 import electron from 'electron';
 import child_process from 'child_process';
 import util from 'util';
-import timers from 'timers';
+import timers from 'timers/promises';
 import fs from 'fs';
 
 electron.app.on('ready', async () => {
