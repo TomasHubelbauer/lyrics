@@ -4,6 +4,10 @@ import fs from 'fs';
 import askSpotify from './askSpotify.js';
 
 electron.app.on('ready', async () => {
+  // Prevent "exited with signal SIGINT" to be printed to the console
+  // Note that this must be in the `ready` event handler
+  process.on("SIGINT", () => { });
+
   /** @type {string} */
   let authorization;
 
