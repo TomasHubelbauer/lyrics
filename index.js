@@ -1,12 +1,9 @@
 import electron from 'electron';
-import child_process from 'child_process';
-import util from 'util';
 import timers from 'timers/promises';
 import fs from 'fs';
+import askSpotify from './askSpotify.js';
 
 electron.app.on('ready', async () => {
-  const exec = util.promisify(child_process.exec);
-
   // Hide the Dock icon for the application
   electron.app.dock.hide();
 
@@ -109,12 +106,7 @@ electron.app.on('ready', async () => {
     /** @type {string} */
     let artist;
     try {
-      const { stdout: artistStdout, stderr: artistStderr } = await exec(`osascript -e 'tell application "Spotify" to artist of current track'`);
-      if (artistStderr) {
-        throw new Error(artistStderr);
-      }
-
-      artist = artistStdout.trimEnd();
+      artist = await askSpotify('artist of current track');
     }
     catch (error) {
       console.log('Failed to get Spotify artist: ' + error);
@@ -124,12 +116,7 @@ electron.app.on('ready', async () => {
     /** @type {string} */
     let song;
     try {
-      const { stdout: songStdout, stderr: songStderr } = await exec(`osascript -e 'tell application "Spotify" to name of current track'`);
-      if (songStderr) {
-        throw new Error(songStderr);
-      }
-
-      song = songStdout.trimEnd();
+      song = await askSpotify('name of current track');
     }
     catch (error) {
       console.log('Failed to get Spotify song: ' + error);
@@ -154,13 +141,8 @@ electron.app.on('ready', async () => {
         /** @type {string} */
         let id;
         try {
-          const { stdout: idStdout, stderr: idStderr } = await exec(`osascript -e 'tell application "Spotify" to id of the current track'`);
-          if (idStderr) {
-            throw new Error(idStderr);
-          }
-
           // E.g.: "ID spotify:track:…"
-          id = idStdout.split(':').at(-1).trimEnd();
+          id = (await askSpotify('id of the current track')).split(':').at(-1).trimEnd();
         }
         catch (error) {
           console.log('Failed to get Spotify ID: ' + error);
@@ -186,13 +168,7 @@ electron.app.on('ready', async () => {
     }
 
     try {
-      const { stdout: stateStdout, stderr: stateStderr } = await exec(`osascript -e 'tell application "Spotify" to player state'`);
-      if (stateStderr) {
-        throw new Error(stateStderr);
-      }
-
-      const _state = stateStdout.trimEnd();
-
+      const _state = await askSpotify('player state');
       if (_state !== 'playing' && _state !== 'paused') {
         throw new Error(`Unexpected player state '${_state}'!`);
       }
@@ -214,12 +190,7 @@ electron.app.on('ready', async () => {
     }
 
     try {
-      const { stdout: positionStdout, stderr: positionStderr } = await exec(`osascript -e 'tell application "Spotify" to player position'`);
-      if (positionStderr) {
-        throw new Error(positionStderr);
-      }
-
-      position = Number(positionStdout);
+      position = Number(await askSpotify('player position'));
     }
     catch (error) {
       console.log('Failed to get Spotify position: ' + error);
@@ -227,12 +198,7 @@ electron.app.on('ready', async () => {
     }
 
     try {
-      const { stdout: durationStdout, stderr: durationStderr } = await exec(`osascript -e 'tell application "Spotify" to duration of current track'`);
-      if (durationStderr) {
-        throw new Error(durationStderr);
-      }
-
-      duration = Number(durationStdout) / 1000;
+      duration = Number(await askSpotify('duration of current track')) / 1000;
     }
     catch (error) {
       console.log('Failed to get Spotify duration: ' + error);
