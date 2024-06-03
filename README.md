@@ -74,3 +74,4 @@ Build a repo which just shows the current time or a random number or something.
 - Replaced track ID web search lookup with a Spotify AppleScript command
 - Rewrote to use the Spotify API directly instead of via the Heroku app
 - Upgraded to latest Electron and started using ESM and TLA
+- Implemented a re-authorization flow for obtaining the new token after a 401

@@ -2,51 +2,14 @@ import electron from 'electron';
 import timers from 'timers/promises';
 import fs from 'fs';
 import askSpotify from './askSpotify.js';
+import promptAuthorization from './promptAuthorization.js';
 
 electron.app.on('ready', async () => {
   // Prevent "exited with signal SIGINT" to be printed to the console
   // Note that this must be in the `ready` event handler
   process.on("SIGINT", () => { });
 
-  /** @type {string} */
-  let authorization;
-
-  const path = `token.json`;
-  try {
-    await fs.promises.access(path);
-
-    console.log('Loading bearer token…');
-    authorization = JSON.parse(await fs.promises.readFile(path));
-    console.log('Loaded bearer token');
-  }
-  catch (error) {
-    if (error.code !== 'ENOENT') {
-      console.log(`Failed to load bearer token: ${error}`);
-    }
-
-    console.log('Obtaining bearer token…');
-    const window = new electron.BrowserWindow({ width: 800, height: 600 });
-    window.loadURL('https://open.spotify.com/');
-
-    authorization = await new Promise((resolve) => {
-      electron.session.defaultSession.webRequest.onSendHeaders(
-        { urls: ['https://gew4-spclient.spotify.com/*'] },
-        (details) => {
-          if (authorization) {
-            return;
-          }
-
-          if (details.requestHeaders['authorization']) {
-            resolve(details.requestHeaders['authorization']);
-          }
-        }
-      );
-    });
-
-    window.close();
-    await fs.promises.writeFile(path, JSON.stringify(authorization, null, 2));
-    console.log('Obtained bearer token');
-  }
+  let authorization = await promptAuthorization();
 
   // Hide the Dock icon for the application
   electron.app.dock.hide();
@@ -167,7 +130,7 @@ electron.app.on('ready', async () => {
     }
 
     // Download new lyrics if we don't already have them
-    if (lyrics?.artist !== artist || lyrics?.song !== song) {
+    if (authorization && (lyrics?.artist !== artist || lyrics?.song !== song)) {
       const path = `lyrics/${artist} - ${song}.json`;
       try {
         await fs.promises.access(path);
@@ -206,7 +169,17 @@ electron.app.on('ready', async () => {
           console.log(`Downloaded lyrics for ${artist} - ${song} (${id})`);
         }
         else {
-          lyrics = { artist, song, error: response.statusText };
+          lyrics = { artist, song, error: response.status + ' ' + response.statusText };
+
+          // Force the user to re-authenticate if the token is invalid
+          if (response.status === 401) {
+            // Reset the field while re-authenticating to prevent multiple prompts
+            authorization = undefined;
+            authorization = await promptAuthorization(true);
+
+            // Reset the lyrics so they are re-tried with the new token
+            lyrics = undefined;
+          }
         }
       }
 
