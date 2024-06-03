@@ -163,22 +163,30 @@ electron.app.on('ready', async () => {
           console.log(`Downloaded ${lyrics.syncType === 'LINE_SYNCED' ? 'synchronized' : 'unsynchronized'} ${artist} - ${song}`);
         }
         else {
-          lyrics = { artist, song, error: response.status + ' ' + response.statusText };
+          lyrics = { artist, song, error: await response.text() };
 
-          // Force the user to re-authenticate if the token is invalid
-          if (response.status === 401) {
-            // Reset the field while re-authenticating to prevent multiple prompts
-            authorization = undefined;
-            authorization = await promptAuthorization(true);
+          switch (response.status) {
+            // Force the user to re-authenticate if the token is invalid
+            case 401: {
+              // Reset the field while re-authenticating to prevent multiple prompts
+              authorization = undefined;
+              authorization = await promptAuthorization(true);
 
-            // Reset the lyrics so they are re-tried with the new token
-            lyrics = undefined;
+              // Reset the lyrics so they are re-tried with the new token
+              lyrics = undefined;
+              break;
+            }
+
+            case 404: {
+              console.log(`No lyrics found for ${artist} - ${song}`);
+              break;
+            }
+
+            default: {
+              console.log(`Failed to download ${artist} - ${song}: ${response.status} ${response.statusText} ${lyrics.error}`);
+            }
           }
         }
-      }
-
-      if (lyrics.error) {
-        console.log(`Lyrics error for ${artist} - ${song}: ${lyrics.error}`);
       }
     }
 
