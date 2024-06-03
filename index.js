@@ -4,6 +4,46 @@ import fs from 'fs';
 import askSpotify from './askSpotify.js';
 
 electron.app.on('ready', async () => {
+  /** @type {string} */
+  let authorization;
+
+  const path = `token.json`;
+  try {
+    await fs.promises.access(path);
+
+    console.log('Loading bearer token…');
+    authorization = JSON.parse(await fs.promises.readFile(path));
+    console.log('Loaded bearer token');
+  }
+  catch (error) {
+    if (error.code !== 'ENOENT') {
+      console.log(`Failed to load bearer token: ${error}`);
+    }
+
+    console.log('Obtaining bearer token…');
+    const window = new electron.BrowserWindow({ width: 800, height: 600 });
+    window.loadURL('https://open.spotify.com/');
+
+    authorization = await new Promise((resolve) => {
+      electron.session.defaultSession.webRequest.onSendHeaders(
+        { urls: ['https://gew4-spclient.spotify.com/*'] },
+        (details) => {
+          if (authorization) {
+            return;
+          }
+
+          if (details.requestHeaders['authorization']) {
+            resolve(details.requestHeaders['authorization']);
+          }
+        }
+      );
+    });
+
+    window.close();
+    await fs.promises.writeFile(path, JSON.stringify(authorization, null, 2));
+    console.log('Obtained bearer token');
+  }
+
   // Hide the Dock icon for the application
   electron.app.dock.hide();
 
@@ -31,7 +71,7 @@ electron.app.on('ready', async () => {
 
   /** @typedef {{ timeTag: string; words: string; }} Line */
 
-  /** @type {{ artist: string; song: string; error: boolean; message?: string; syncType: 'LINE_SYNCED' | 'UNSYNCED'; lines: Line[]; } | undefined} */
+  /** @type {({ artist: string; song: string; } & ({ error: string; } | { syncType: 'LINE_SYNCED' | 'UNSYNCED'; lines: Line[]; })) | undefined} */
   let lyrics;
 
   /** @type {Line | undefined} */
@@ -70,8 +110,7 @@ electron.app.on('ready', async () => {
         }
         case 'LINE_SYNCED': {
           {
-            const stamp = `${(~~(position / 60)).toString().padStart('00'.length, '0')}:${(position % 60).toFixed(2).toString().padStart('00.00'.length, '0')}`;
-            const index = lyrics.lines.findIndex(line => line.timeTag >= stamp);
+            const index = lyrics.lines.findIndex(line => line.startTimeMs >= position * 1000);
             const _line = lyrics.lines[index - 1];
             if (_line !== line) {
               line = _line;
@@ -152,18 +191,23 @@ electron.app.on('ready', async () => {
         console.log(`Downloading lyrics for ${artist} - ${song} (${id})…`);
 
         // Download LRC (timestamped) lyrics from the unofficial Spotify Lyrics API
-        // See https://github.com/akashrchandran/spotify-lyrics-api
-        const apiUrl = `https://spotify-lyric-api.herokuapp.com/?trackid=${id}&format=lrc`;
-        const apiJson = await fetch(apiUrl, { headers: { 'User-Agent': 'Firefox' } }).then(response => response.json());
+        // Inspect the `open.spotify.com` developer tools `lyrics` network call to maintain this 
+        const response = await fetch(`https://spclient.wg.spotify.com/color-lyrics/v2/track/${id}?format=json`, { headers: { authorization, 'app-platform': 'WebPlayer' } });
+        if (response.ok) {
+          const data = await response.json();
 
-        lyrics = { artist, song, ...apiJson };
-        await fs.promises.writeFile(path, JSON.stringify(lyrics, null, 2));
+          lyrics = { artist, song, ...data.lyrics };
+          await fs.promises.writeFile(path, JSON.stringify(lyrics, null, 2));
 
-        console.log(`Downloaded lyrics for ${artist} - ${song}`);
+          console.log(`Downloaded lyrics for ${artist} - ${song} (${id})`);
+        }
+        else {
+          lyrics = { artist, song, error: response.statusText };
+        }
       }
 
       if (lyrics.error) {
-        console.log(`Lyrics error for ${artist} - ${song}: ${lyrics.message ?? 'unknown error'}`);
+        console.log(`Lyrics error for ${artist} - ${song} (${id}): ${lyrics.error}`);
       }
     }
 

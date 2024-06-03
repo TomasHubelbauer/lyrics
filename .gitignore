@@ -2,3 +2,4 @@ node_modules
 bun.lockb
 lyrics/*
 !lyrics/.gitkeep
+token.json
