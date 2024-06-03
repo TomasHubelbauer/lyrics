@@ -66,7 +66,7 @@ electron.app.on('ready', async () => {
             // Get rid of the lingering shadows/opacity (for the most part) - see the readme
             window.reload();
             await window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '~ ${text}';`);
-            console.log(`Flashed unsynchronized lyric "${line?.words}"`);
+            console.log(line?.words ? `Flashed unsynchronized lyric "${line?.words}"` : 'Cleared unsynchronized lyric');
           }
 
           position += .1;
@@ -84,7 +84,7 @@ electron.app.on('ready', async () => {
               // Get rid of the lingering shadows/opacity (for the most part) - see the readme
               window.reload();
               await window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '${text}';`);
-              console.log(`Flashed synchronized lyric "${line?.words}"`);
+              console.log(line?.words ? `Flashed synchronized lyric "${line?.words}"` : 'Cleared synchronized lyric');
             }
 
             position += .1;
@@ -131,14 +131,11 @@ electron.app.on('ready', async () => {
       const path = `lyrics/${artist} - ${song}.json`;
       try {
         await fs.promises.access(path);
-
-        console.log(`Loading lyrics for ${artist} - ${song}…`);
         lyrics = JSON.parse(await fs.promises.readFile(path));
-        console.log(`Loaded lyrics for ${artist} - ${song}`);
       }
       catch (error) {
         if (error.code !== 'ENOENT') {
-          console.log(`Failed to load lyrics for ${artist} - ${song}: ${error}`);
+          console.log(`Failed to load ${artist} - ${song}: ${error}`);
         }
 
         /** @type {string} */
@@ -152,7 +149,7 @@ electron.app.on('ready', async () => {
           continue;
         }
 
-        console.log(`Downloading lyrics for ${artist} - ${song} (${id})…`);
+        console.log(`Downloading ${artist} - ${song}…`);
 
         // Download LRC (timestamped) lyrics from the unofficial Spotify Lyrics API
         // Inspect the `open.spotify.com` developer tools `lyrics` network call to maintain this 
@@ -163,7 +160,7 @@ electron.app.on('ready', async () => {
           lyrics = { artist, song, ...data.lyrics };
           await fs.promises.writeFile(path, JSON.stringify(lyrics, null, 2));
 
-          console.log(`Downloaded lyrics for ${artist} - ${song} (${id})`);
+          console.log(`Downloaded ${artist} - ${song}`);
         }
         else {
           lyrics = { artist, song, error: response.status + ' ' + response.statusText };

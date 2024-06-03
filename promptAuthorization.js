@@ -19,10 +19,7 @@ export default async function promptAuthorization(force = false) {
 
   try {
     await fs.promises.access(path);
-
-    console.log('Loading bearer token…');
     authorization = JSON.parse(await fs.promises.readFile(path));
-    console.log('Loaded bearer token');
   }
   catch (error) {
     if (error.code !== 'ENOENT') {
