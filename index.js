@@ -74,7 +74,7 @@ electron.app.on('ready', async () => {
         }
         case 'LINE_SYNCED': {
           {
-            const index = lyrics.lines.findIndex(line => line.startTimeMs >= position * 1000);
+            const index = lyrics.lines.findIndex(line => line.startTimeMs >= position * 1000 + 100);
             const _line = lyrics.lines[index - 1];
             if (_line !== line) {
               line = _line;
