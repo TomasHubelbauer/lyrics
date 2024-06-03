@@ -5,37 +5,19 @@ lyrics of the song playing in Spotify.
 
 It is a homage to a similar application that existed for Windows when I was a
 kid and which I loved.
-I don't remember its name anymore thought and was unable to find it using web
-search.
+I don't remember its name anymore though.
+It might have been MiniLyrics, but a Google image search doesn't surface a UI
+setup with transparent background and click-through behavior which I remember
+having and may have just configured for myself.
 
 ![](lyrics.gif)
 
-## Credits
-
-Thanks to [akashrchandran](https://github.com/akashrchandran) for running the
-Spotify Lyrics API service.
-
 ## Tasks
 
-### Make the LRC sources pluggable and look through multiple
+### Figure out automated publishing to GitHub Actions
 
-Right now this whole show hinges on the Spotify Lyrics API service.
-If Spotify ever prevents it from working or the maintainer abandonds it and it
-bit rots, this whole application is over.
-
-https://github.com/akashrchandran/spotify-lyrics-api
-
-There should be other sources, some Reddit threads for inspiration:
-
-- https://www.reddit.com/r/musichoarder/comments/u4oi0i/getting_synced_lyrics_lrc_lyrics_for_almost_any/
-- https://www.reddit.com/r/musichoarder/comments/w7as70/synced_lyrics/
-
-### Call Spotify directly with the hack shown in Spotify Lyrics API
-
-https://github.com/akashrchandran/spotify-lyrics-api/blob/main/src/Spotify.php
-
-The logic seems quite simple so I could be able to hit Spotify directly and not
-have to risk the service going down.
+Build for both Windows and macOS:
+https://www.electronjs.org/docs/latest/tutorial/application-distribution#manual-packaging
 
 ### Allow dragging the lyrics away or dismissing them for a song
 
@@ -50,36 +32,12 @@ With the ability to hold up or rush the pace, it will be possible to correc the
 timing issues with linear unsynchronized lyrics.
 Also consider saving the changes to manually synchronized lyrics for reuse.
 
-### Fix the second synchronized lyric update always being an empty line
-
-I think this might be a problem with my logic.
-
 ### Report the lingering shadow issue with a minimal example
 
 Build a repo which just shows the current time or a random number or something.
 
 ## Notes
 
-- Electron doesn't support ESM
-  - Using `import` and setting `type` in `package.json` to `module` won't work,
-    Electron will fail to load and will suggest to use dynamic `import` instead
-  - Using dynamic `import` with TLA won't work because Electron doesn't support
-    TLA
-  - Using dynamic `import` requires `type` be unset in `package.json` BTW
-  - See https://github.com/electron/electron/issues/21457
-  - I found a hack with an ESM Node package but decided against adding a dep
-    https://github.com/electron/electron/issues/21457#issuecomment-612441169
-- Electron doesn't support TLA
-  - I am using an IIFE with dynamic `import` to simulate something at least
-    resembling ESM because TLA is not supported (to drop the need for the IIFE)
-  - See https://github.com/electron/electron/issues/37492
-- I have not found a good way to make the window start blurred
-  - I don't want to display the menu bar when the app starts up
-  - Making the window click-through partially achieves future focus return
-  - Calling `blur` or `blueWebView` doesn't shed the initial focus
-- Electron doesn't ship with `fetch` despite shipping with Node
-  - Current Electron ships with new enough Node it should have built-in `fetch`
-  - See https://github.com/electron/electron/issues/37493
 - The text shadow/opacity ghost remains visible even after changing the text
   - This is some sort of an issue with Electron because it is for the most part
     fixable by reloading the page (vast majority of reloads clear the shadow)
@@ -113,3 +71,6 @@ Build a repo which just shows the current time or a random number or something.
   - Allows for the text fade without ugly unsupported CSS
   - Allows for an easy way to do a text outline
   - Still suffers from the shadow/opacity ghosting HTML based rendering did
+- Replaced track ID web search lookup with a Spotify AppleScript command
+- Rewrote to use the Spotify API directly instead of via the Heroku app
+- Upgraded to latest Electron and started using ESM and TLA
