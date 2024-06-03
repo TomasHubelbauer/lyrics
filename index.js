@@ -7,7 +7,7 @@ import promptAuthorization from './promptAuthorization.js';
 electron.app.on('ready', async () => {
   // Prevent "exited with signal SIGINT" to be printed to the console
   // Note that this must be in the `ready` event handler
-  process.on("SIGINT", () => { });
+  process.on("SIGINT", () => process.exit(0));
 
   let authorization = await promptAuthorization();
 
