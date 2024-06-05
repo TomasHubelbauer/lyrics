@@ -4,6 +4,12 @@ import fs from 'fs';
 import askSpotify from './askSpotify.js';
 import promptAuthorization from './promptAuthorization.js';
 
+// Disable CSP warnings coming from the Spotify web which I can't control
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
+// Enable Chromium features required by Spotify which print a warning otherwise
+electron.app.commandLine.appendSwitch('--enable-features', 'ConversionMeasurement,AttributionReportingCrossAppWeb');
+
 electron.app.on('ready', async () => {
   // Prevent "exited with signal SIGINT" to be printed to the console
   // Note that this must be in the `ready` event handler

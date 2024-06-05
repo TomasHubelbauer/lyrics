@@ -27,7 +27,7 @@ export default async function promptAuthorization(force = false) {
     }
 
     console.log('Obtaining bearer token…');
-    const window = new electron.BrowserWindow({ width: 1024, height: 800 });
+    const window = new electron.BrowserWindow({ width: 1024, height: 800, webPreferences: { nodeIntegration: false, webSecurity: false } });
     window.loadURL('https://open.spotify.com/');
 
     authorization = await new Promise((resolve) => {
