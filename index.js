@@ -4,6 +4,12 @@ import fs from 'fs';
 import askSpotify from './askSpotify.js';
 import promptAuthorization from './promptAuthorization.js';
 
+// Set working directory for the production builds
+process.chdir(electron.app.getPath('home'));
+await fs.promises.mkdir('Lyrics', { recursive: true });
+process.chdir(electron.app.getPath('home') + '/Lyrics');
+await fs.promises.mkdir('lyrics', { recursive: true });
+
 // Disable CSP warnings coming from the Spotify web which I can't control
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 

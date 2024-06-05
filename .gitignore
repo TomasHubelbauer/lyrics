@@ -3,3 +3,4 @@ bun.lockb
 lyrics/*
 !lyrics/.gitkeep
 token.json
+builds

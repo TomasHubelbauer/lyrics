@@ -23,6 +23,45 @@ It seems to be reviving it.
 Build for both Windows and macOS:
 https://www.electronjs.org/docs/latest/tutorial/application-distribution#manual-packaging
 
+For now I am manually using Electron Packager:
+https://github.com/electron/packager
+
+Build for Windows:
+
+```
+bunx electron-packager . Lyrics --platform win32 --arch x64 --overwrite --ignore "(builds|lyrics|node_modules|.gitignore|bun.lockb|README.md|token.json)" --out builds
+```
+
+Build for macOS:
+
+```
+bunx electron-packager . Lyrics --platform darwin --arch arm64 --overwrite --ignore "(builds|lyrics|node_modules|.gitignore|bun.lockb|README.md|token.json)" --out builds
+```
+
+Run for macOS as a user:
+
+```
+(cd builds; cd Lyrics-darwin-arm64; open Lyrics.app)
+```
+
+To see console statements:
+
+```
+./builds/Lyrics-darwin-arm64/Lyrics.app/Contents/MacOS/Lyrics
+```
+
+- `overwrite` is used to not skip previously built targets
+- `ignore` is used to ignore files not a part of the application bundle
+
+The production builds require a working directory to be set to something because
+they default to `/`.
+
+I set it to the user's home directory, create a `Lyrics` directory there and the
+`lyrics` directory and `token.json` files further go there.
+
+We can remove the `.gitignore` entries and the `lyrics` directory's `.gitkeep`
+here.
+
 ### Allow dragging the lyrics away or dismissing them for a song
 
 This will require not making the window click-through, just transparent and cut
