@@ -79,3 +79,5 @@ Build a repo which just shows the current time or a random number or something.
 - Rewrote to use the Spotify API directly instead of via the Heroku app
 - Upgraded to latest Electron and started using ESM and TLA
 - Implemented a re-authorization flow for obtaining the new token after a 401
+- Switched back to CSS based rendering for the more flexible approach
+  (Not everything is supported vendorless, but it is getting better.)

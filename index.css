@@ -1,14 +1,27 @@
 body {
   animation: reveal .5s forwards;
-  font: bold 27pt sans-serif;
-  margin: 0;
+  color: white;
+  font: icon;
   opacity: 0;
   overflow: hidden;
+  text-align: center;
 }
 
-svg {
-  height: 100vh;
-  width: 100vw;
+body::before {
+  background: linear-gradient(white, lightgray);
+  background-clip: text;
+  content: attr(data-unsynced) ' ' attr(data-lyric) ' ' attr(data-unsynced);
+  display: block;
+  font: bold 27pt sans-serif;
+  margin: 4lh 0 0;
+  text-shadow: 0 0 1ch black;
+
+  /* Note that the vendor prefixes here are still required */
+  /* TODO: Use `text-fill` (not `text-fill-color`) and `text-stroke` here once supported */
+  /* See https://caniuse.com/?search=text-fill-color */
+  /* See https://caniuse.com/?search=text-stroke */
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: 1px white;
 }
 
 @keyframes reveal {

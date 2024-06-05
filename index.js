@@ -98,9 +98,10 @@ electron.app.on('ready', async () => {
       }
 
       if (lyric) {
-        // Escape single quotes and line breaks to make the JavaScript string safe and valid
-        const text = (lyrics.syncType === 'UNSYNCED' ? '~ ' : '') + lyric.replace(/'/g, '\\\'').replace(/(\r|\n)/g, '');
-        await window.webContents.executeJavaScript(`document.querySelector('#lyricText').textContent = '${text}';`);
+        // Escape single quotes and line breaks to make the string safe to pass
+        const text = lyric.replace(/'/g, '\\\'').replace(/(\r|\n)/g, '');
+        await window.webContents.executeJavaScript(`document.body.dataset.lyric = '${text}';`);
+        await window.webContents.executeJavaScript(`document.body.dataset.unsynced = '${lyrics.syncType === 'UNSYNCED' ? '~' : ''}';`);
         console.log(`Flashed ${lyrics.syncType === 'LINE_SYNCED' ? 'synchronized' : 'unsynchronized'} lyric "${lyric}"`);
       }
       else {
