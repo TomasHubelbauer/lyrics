@@ -26,6 +26,6 @@ body::before {
 
 @keyframes reveal {
   to {
-    opacity: .5;
+    opacity: .75;
   }
 }
