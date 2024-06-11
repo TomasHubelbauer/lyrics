@@ -71,10 +71,6 @@ With the ability to hold up or rush the pace, it will be possible to correc the
 timing issues with linear unsynchronized lyrics.
 Also consider saving the changes to manually synchronized lyrics for reuse.
 
-### Report the lingering shadow issue with a minimal example
-
-Build a repo which just shows the current time or a random number or something.
-
 ## Notes
 
 - The application cannot be supported on Windows due to lack of AppleScript
@@ -121,3 +117,5 @@ Build a repo which just shows the current time or a random number or something.
 - Added a macOS Dock context menu with artist, song and token information
 - Made the Spotify web player window wait to show to prevent refresh flashes
 - Removed no longer used stuff now that the app uses the user's Home directory
+- Worked around the ghosting issue and capture a repro repository for it:
+  https://github.com/TomasHubelbauer/electron-lingering-shadow-repro

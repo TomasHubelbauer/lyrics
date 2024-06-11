@@ -27,7 +27,7 @@ electron.app.on('ready', async () => {
   const display = electron.screen.getPrimaryDisplay();
   const { width, height } = display.workAreaSize;
 
-  const window = new electron.BrowserWindow({ width, height, frame: false, transparent: true });
+  const window = new electron.BrowserWindow({ width, height, hasShadow: false, frame: false, transparent: true });
   window.loadFile('index.html');
 
   // Make the window always stay on top
@@ -91,8 +91,6 @@ electron.app.on('ready', async () => {
       }
 
       if (!lyrics || ('error' in lyrics) || state !== 'playing') {
-        // Get rid of the lingering shadows/opacity (for the most part) - see the readme
-        window.reload();
         return;
       }
 
@@ -134,9 +132,6 @@ electron.app.on('ready', async () => {
         // Keep the lyrics display as-is
         return;
       }
-
-      // Get rid of the lingering shadows/opacity (for the most part) - see the readme
-      window.reload();
 
       // Coerce the musical note character to an empty lyric line instead
       if (lyric === '♪') {
