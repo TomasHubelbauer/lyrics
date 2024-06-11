@@ -49,6 +49,12 @@ Run with the ability to see console statements:
 ./Lyrics-darwin-arm64/Lyrics.app/Contents/MacOS/Lyrics
 ```
 
+Replace the installed Lyrics app in Applications with the built one:
+
+```
+rm -rf /Applications/Lyrics.app && cp -R ./Lyrics-darwin-arm64/Lyrics.app /Applications/Lyrics.app
+```
+
 - `overwrite` is used to force a new build each run
 - `ignore` is used to ignore files not a part of the application bundle
 
