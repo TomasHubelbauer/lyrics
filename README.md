@@ -28,6 +28,11 @@ Spotify from the agent.
 
 It seems to be reviving it.
 
+### Integrate the Electron auto-update service once GitHub Actions is set up
+
+So I do not need to replace the app but can rely on it to auto-update on start
+if a new version has been cut.
+
 ### Figure out automated publishing to GitHub Actions
 
 I am manually using Electron Packager:
