@@ -20,19 +20,8 @@ It seems to be reviving it.
 
 ### Figure out automated publishing to GitHub Actions
 
-Build for both Windows and macOS:
-https://www.electronjs.org/docs/latest/tutorial/application-distribution#manual-packaging
-
-For now I am manually using Electron Packager:
+I am manually using Electron Packager:
 https://github.com/electron/packager
-
-Build for Windows:
-
-```
-bunx electron-packager . Lyrics --platform win32 --arch x64 --overwrite --ignore "(builds|lyrics|node_modules|.gitignore|bun.lockb|README.md|token.json)" --out builds
-```
-
-Build for macOS:
 
 ```
 bunx electron-packager . Lyrics --platform darwin --arch arm64 --overwrite --ignore "(builds|lyrics|node_modules|.gitignore|bun.lockb|README.md|token.json)" --out builds
@@ -81,6 +70,8 @@ Build a repo which just shows the current time or a random number or something.
 
 ## Notes
 
+- The application cannot be supported on Windows due to lack of AppleScript
+  (Windows has automations but the Spotify app doesn't have the same commands)
 - The text shadow/opacity ghost remains visible even after changing the text
   - This is some sort of an issue with Electron because it is for the most part
     fixable by reloading the page (vast majority of reloads clear the shadow)
