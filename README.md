@@ -24,10 +24,6 @@ The video needs to be recorded based on an automated script to be reproducible.
 I will use faked synchronized lyrics for it so that I don't need to connect to
 Spotify from the agent.
 
-### Prevent the app from re-opening Spotify if not open or closed while it runs
-
-It seems to be reviving it.
-
 ### Integrate the Electron auto-update service once GitHub Actions is set up
 
 So I do not need to replace the app but can rely on it to auto-update on start
@@ -130,3 +126,4 @@ Also consider saving the changes to manually synchronized lyrics for reuse.
 - Removed no longer used stuff now that the app uses the user's Home directory
 - Worked around the ghosting issue and capture a repro repository for it:
   https://github.com/TomasHubelbauer/electron-lingering-shadow-repro
+- Fixed the Lyrics app opening up Spotify unintentionally if it was closed

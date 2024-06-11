@@ -3,6 +3,7 @@ import timers from 'timers/promises';
 import fs from 'fs';
 import askSpotify from './askSpotify.js';
 import promptAuthorization from './promptAuthorization.js';
+import runAppleScript from './runAppleScript.js';
 
 // Set working directory for the production builds
 process.chdir(electron.app.getPath('home'));
@@ -98,6 +99,8 @@ electron.app.on('ready', async () => {
       }
 
       if (!lyrics || ('error' in lyrics) || state !== 'playing') {
+        // Clear the last line in case Spotify got paused or stopped
+        await window.webContents.executeJavaScript(`document.body.dataset.lyric = '';`);
         return;
       }
 
@@ -166,9 +169,15 @@ electron.app.on('ready', async () => {
 
   // Check artist, song and time and fetch and update lyrics on slow interval
   while (true) {
-    // Wait for 5 seconds between Spotify checks unless it is the first loop run
-    if (lyrics) {
-      await timers.setTimeout(5000);
+    // Wait a bit seconds between AppleScript Spotify checks to not be spammy
+    await timers.setTimeout(2000);
+
+    // Determine if Spotify is running to avoid starting it unintentionally
+    if (!+await runAppleScript('tell application "System Events" to count (every process whose name is "Spotify")')) {
+      // Reset the lyris so we don't get stuck on the last line
+      lyrics = undefined;
+
+      continue;
     }
 
     /** @type {string} */
@@ -264,7 +273,7 @@ electron.app.on('ready', async () => {
 
     try {
       const _state = await askSpotify('player state');
-      if (_state !== 'playing' && _state !== 'paused') {
+      if (_state !== 'playing' && _state !== 'paused' && _state !== 'stopped') {
         throw new Error(`Unexpected player state '${_state}'!`);
       }
 
