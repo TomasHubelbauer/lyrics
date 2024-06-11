@@ -14,6 +14,16 @@ having and may have just configured for myself.
 
 ## Tasks
 
+### Set up a GitHub Actions workflow for generating the GIF and screencast
+
+I might drop the GIF now that both GitHub Markdown preview and VS Code support
+videos.
+Though that would mean losing auto-play.
+
+The video needs to be recorded based on an automated script to be reproducible.
+I will use faked synchronized lyrics for it so that I don't need to connect to
+Spotify from the agent.
+
 ### Prevent the app from re-opening Spotify if not open or closed while it runs
 
 It seems to be reviving it.
