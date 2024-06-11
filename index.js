@@ -146,6 +146,11 @@ electron.app.on('ready', async () => {
       }
 
       if (lyric) {
+        // Handle the window no longer existing after Ctrl+C while testing
+        if (window.isDestroyed()) {
+          process.exit(0);
+        }
+
         // Escape single quotes and line breaks to make the string safe to pass
         const text = lyric.replace(/'/g, '\\\'').replace(/(\r|\n)/g, '');
         await window.webContents.executeJavaScript(`document.body.dataset.lyric = '${text}';`);
