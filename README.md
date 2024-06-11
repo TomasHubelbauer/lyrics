@@ -24,22 +24,22 @@ I am manually using Electron Packager:
 https://github.com/electron/packager
 
 ```
-bunx electron-packager . Lyrics --platform darwin --arch arm64 --overwrite --ignore "(builds|lyrics|node_modules|.gitignore|bun.lockb|README.md|token.json)" --out builds
+bunx electron-packager . Lyrics --overwrite --ignore "(lyrics|node_modules|.gitignore|bun.lockb|README.md|token.json)"
 ```
 
-Run for macOS as a user:
+Run emulating startup initiated by the user:
 
 ```
-(cd builds; cd Lyrics-darwin-arm64; open Lyrics.app)
+open Lyrics-darwin-arm64/Lyrics.app
 ```
 
-To see console statements:
+Run with the ability to see console statements:
 
 ```
-./builds/Lyrics-darwin-arm64/Lyrics.app/Contents/MacOS/Lyrics
+./Lyrics-darwin-arm64/Lyrics.app/Contents/MacOS/Lyrics
 ```
 
-- `overwrite` is used to not skip previously built targets
+- `overwrite` is used to force a new build each run
 - `ignore` is used to ignore files not a part of the application bundle
 
 The production builds require a working directory to be set to something because

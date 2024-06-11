@@ -3,4 +3,4 @@ bun.lockb
 lyrics/*
 !lyrics/.gitkeep
 token.json
-builds
+Lyrics-darwin-arm64
