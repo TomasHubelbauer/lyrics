@@ -1,6 +1,3 @@
 node_modules
 bun.lockb
-lyrics/*
-!lyrics/.gitkeep
-token.json
 Lyrics-darwin-arm64

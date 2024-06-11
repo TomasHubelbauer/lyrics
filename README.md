@@ -24,7 +24,7 @@ I am manually using Electron Packager:
 https://github.com/electron/packager
 
 ```
-bunx electron-packager . Lyrics --overwrite --ignore "(lyrics|node_modules|.gitignore|bun.lockb|README.md|token.json)"
+bunx electron-packager . Lyrics --overwrite --ignore "(node_modules|.gitignore|bun.lockb|README.md)"
 ```
 
 Run emulating startup initiated by the user:
@@ -47,9 +47,6 @@ they default to `/`.
 
 I set it to the user's home directory, create a `Lyrics` directory there and the
 `lyrics` directory and `token.json` files further go there.
-
-We can remove the `.gitignore` entries and the `lyrics` directory's `.gitkeep`
-here.
 
 ### Allow dragging the lyrics away or dismissing them for a song
 
@@ -113,3 +110,4 @@ Build a repo which just shows the current time or a random number or something.
   (Not everything is supported vendorless, but it is getting better.)
 - Added a macOS Dock context menu with artist, song and token information
 - Made the Spotify web player window wait to show to prevent refresh flashes
+- Removed no longer used stuff now that the app uses the user's Home directory
