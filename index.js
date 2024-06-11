@@ -22,6 +22,7 @@ electron.app.on('ready', async () => {
   process.on("SIGINT", () => process.exit(0));
 
   let authorization = await promptAuthorization();
+  let authorizationStamp = (await fs.promises.stat('token.json')).ctime;
 
   const display = electron.screen.getPrimaryDisplay();
   const { width, height } = display.workAreaSize;
@@ -52,6 +53,25 @@ electron.app.on('ready', async () => {
 
   /** @type {Line | undefined} */
   let line;
+
+  function refreshDockMenu() {
+    const menu = new electron.Menu();
+
+    const refreshTokenMenuItem = new electron.MenuItem({
+      label: `Refresh token (${authorizationStamp.toLocaleTimeString()})`,
+      click: async () => {
+        authorization = await promptAuthorization(true);
+        authorizationStamp = new Date();
+        refreshDockMenu();
+      }
+    });
+
+    menu.append(refreshTokenMenuItem);
+
+    electron.app.dock.setMenu(menu);
+  }
+
+  refreshDockMenu();
 
   // Render current lyrics line on a fast interval for smooth updates
   setInterval(
@@ -200,6 +220,10 @@ electron.app.on('ready', async () => {
               // Reset the field while re-authenticating to prevent multiple prompts
               authorization = undefined;
               authorization = await promptAuthorization(true);
+              authorizationStamp = new Date();
+
+              // Refresh the `Refresh token` menu item in the Dock context menu
+              refreshDockMenu();
 
               // Reset the lyrics so they are re-tried with the new token
               lyrics = undefined;
