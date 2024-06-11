@@ -57,6 +57,15 @@ electron.app.on('ready', async () => {
   function refreshDockMenu() {
     const menu = new electron.Menu();
 
+    if (lyrics) {
+      const artistSongMenuItem = new electron.MenuItem({
+        label: `${lyrics.artist} - ${lyrics.song} (${lyrics.syncType === 'LINE_SYNCED' ? 'synchronized' : 'unsynchronized'})`,
+        enabled: false
+      });
+
+      menu.append(artistSongMenuItem);
+    }
+
     const refreshTokenMenuItem = new electron.MenuItem({
       label: `Refresh token (${authorizationStamp.toLocaleTimeString()})`,
       click: async () => {
@@ -241,6 +250,9 @@ electron.app.on('ready', async () => {
           }
         }
       }
+
+      // Refresh the `Artist - Song` menu item in the Dock context menu
+      refreshDockMenu();
     }
 
     try {
