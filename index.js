@@ -56,6 +56,11 @@ electron.app.on('ready', async () => {
   // Render current lyrics line on a fast interval for smooth updates
   setInterval(
     async () => {
+      // Handle the window no longer existing after Ctrl+C while testing
+      if (window.isDestroyed()) {
+        process.exit(0);
+      }
+
       if (!lyrics || ('error' in lyrics) || state !== 'playing') {
         // Get rid of the lingering shadows/opacity (for the most part) - see the readme
         window.reload();
