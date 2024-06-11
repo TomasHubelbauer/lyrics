@@ -77,6 +77,13 @@ electron.app.on('ready', async () => {
 
     menu.append(refreshTokenMenuItem);
 
+    const dataPathMenuItem = new electron.MenuItem({
+      label: `Open Lyrics directory (${electron.app.getPath('home')}/Lyrics)`,
+      click: () => electron.shell.openPath(electron.app.getPath('home') + '/Lyrics')
+    });
+
+    menu.append(dataPathMenuItem);
+
     electron.app.dock.setMenu(menu);
   }
 
