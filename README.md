@@ -121,3 +121,4 @@ Build a repo which just shows the current time or a random number or something.
 - Switched back to CSS based rendering for the more flexible approach
   (Not everything is supported vendorless, but it is getting better.)
 - Added a macOS Dock context menu with artist, song and token information
+- Made the Spotify web player window wait to show to prevent refresh flashes

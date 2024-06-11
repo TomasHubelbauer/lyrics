@@ -27,8 +27,17 @@ export default async function promptAuthorization(force = false) {
     }
 
     console.log('Obtaining bearer token…');
-    const window = new electron.BrowserWindow({ width: 1024, height: 800, webPreferences: { nodeIntegration: false, webSecurity: false } });
+    const window = new electron.BrowserWindow({ width: 1024, height: 800, show: false, webPreferences: { nodeIntegration: false, webSecurity: false } });
     window.loadURL('https://open.spotify.com/');
+
+    // Keep the window hidden for a bit in case the user is logged in and we
+    // just need to refresh the token which is done opaquely in the background
+    setTimeout(() => {
+      // Do not show the window if the token has been refreshed automatically
+      if (!window.isDestroyed()) {
+        window.show();
+      }
+    }, 1000);
 
     authorization = await new Promise((resolve) => {
       electron.session.defaultSession.webRequest.onSendHeaders(
